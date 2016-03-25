@@ -1,0 +1,9 @@
+<%= greet %>
+
+
+== HTTP Headers ==
+<%=
+  env.select{|k,v| k=~/HTTP_X/ && !(k=~/HTTP_X_FORWARDED/)}.map{|k,v| "#{k} = #{v}"}.join "\n"
+%>
+
+<%= verify_log %>
