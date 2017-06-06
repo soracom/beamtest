@@ -22,7 +22,7 @@ def verify_signature(env, secret = 'topsecret')
   result = (calculated_signature == env['HTTP_X_SORACOM_SIGNATURE'])
   log = <<EOS
 = Signature Verification =
-Pre shared key = topsecret
+Pre shared key = #{secret}
 
 stringToSign:
 #{string_to_sign}
@@ -47,7 +47,7 @@ get '/' do
     log=""
     result=200
     if request.env['HTTP_X_SORACOM_SIGNATURE']
-      res = verify_signature request.env
+      res = verify_signature request.env, (params[:secret] || "topsecret")
       puts res[:log]
       log = res[:log]
       result = res[:result]
@@ -86,4 +86,11 @@ post '/' do
     puts "Hello SORACOM Beam Client IMSI:#{request.env['HTTP_X_SORACOM_IMSI']}"
   end
   "Success: #{output}"
+end
+
+get '/dumpenv*' do
+  request.env.select{|k,v| k=~/HTTP_/}.map{|k,v| "#{k}=#{v}\n"}.join
+end
+post '/dumpenv*' do
+  request.env.select{|k,v| k=~/HTTP_/}.map{|k,v| "#{k}=#{v}\n"}.join
 end
