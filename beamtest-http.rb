@@ -42,7 +42,8 @@ end
 # 普通にブラウザなどでアクセスした場合
 get '/' do
   puts request.env.map{|k,v| "#{k}=#{v}\n"}.join
-  template = request.env['HTTP_USER_AGENT'].match(/curl/i)? :curl : :dump
+  user_agent = request.env['HTTP_USER_AGENT'] || 'curl'
+  template = user_agent.match(/curl/i)? :curl : :dump
   if request.env['HTTP_X_SORACOM_IMSI']
     log=""
     result=200
