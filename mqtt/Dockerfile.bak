@@ -1,8 +1,0 @@
-FROM eclipse-mosquitto
-
-COPY mosquitto.conf /mosquitto/config/
-COPY passwd /mosquitto/config/
-
-CMD cat /mosquitto/config/mosquitto.conf
-
-EXPOSE 1883
