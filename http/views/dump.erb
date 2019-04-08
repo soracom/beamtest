@@ -1,0 +1,18 @@
+<html>
+<head>
+  <title><%= greet %></title>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+</head>
+<body>
+<h1 align="center"><%= greet %></h1>
+<h2 align="center">HTTP Headers</h2>
+<div  class="container">
+  <table class="table">
+<%=
+  env.select{|k,v| k=~/HTTP_X/ && !(k=~/HTTP_X_FORWARDED/)}.map{|k,v| "<tr><th>#{k}</th><td>#{v}</td></tr>"}.join
+%>
+  </table>
+  <%= "<code>#{verify_log.gsub(/\n/,'<br>')}</code>" if verify_log %>
+</div>
+</body>
+</html>
