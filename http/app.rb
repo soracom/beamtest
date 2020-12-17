@@ -48,7 +48,7 @@ get '/' do
   if user_agent.match(/curl/i)
     content_type 'text/plain;charset=utf8'
   end
-  if request.env['HTTP_X_SORACOM_IMSI']
+  if request.env['HTTP_X_SORACOM_IMSI'] || request.env['HTTP_X_SORACOM_IMEI'] || request.env['HTTP_X_SORACOM_SIM_ID'] || request.env['HTTP_X_SORACOM_MSISDN']
     log=""
     result=200
     if request.env['HTTP_X_SORACOM_SIGNATURE']
@@ -57,9 +57,23 @@ get '/' do
       log = res[:log]
       result = res[:result]
     end
-    puts "Hello SORACOM Beam Client IMSI:#{request.env['HTTP_X_SORACOM_IMSI']}"
+    greetings = "Hello SORACOM Beam Client"
+    if request.env['HTTP_X_SORACOM_IMSI']
+      greetings += " IMSI:#{request.env['HTTP_X_SORACOM_IMSI']}"
+    end
+    if request.env['HTTP_X_SORACOM_SIM_ID']
+      greetings += " SIM_ID:#{request.env['HTTP_X_SORACOM_SIM_ID']}"
+    end
+    if request.env['HTTP_X_SORACOM_MSISDN']
+      greetings += " MSISDN:#{request.env['HTTP_X_SORACOM_MSISDN']}"
+    end
+    if request.env['HTTP_X_SORACOM_IMEI']
+      greetings += " IMEI:#{request.env['HTTP_X_SORACOM_IMEI']}"
+    end
+    greetings += " !"
+    puts greetings
     status 403 if result == false
-    erb template, locals: { greet: "Hello SORACOM Beam Client #{request.env['HTTP_X_SORACOM_IMSI']} !", env: request.env, verify_log: log}
+    erb template, locals: { greet: greetings, env: request.env, verify_log: log}
   else
     puts 'Hello unknown client ...'
     erb template, locals: { greet: 'Hello Unknown Client...', env: request.env, verify_log:'' }
@@ -81,7 +95,7 @@ post '/' do
     content_type 'text/plain;charset=utf8'
   end
 
-  if request.env['HTTP_X_SORACOM_IMSI']
+  if request.env['HTTP_X_SORACOM_IMSI'] || request.env['HTTP_X_SORACOM_IMEI'] || request.env['HTTP_X_SORACOM_SIM_ID'] || request.env['HTTP_X_SORACOM_MSISDN']
     if request.env['HTTP_X_SORACOM_SIGNATURE']
       res = verify_signature request.env
       puts res[:log]
@@ -92,7 +106,20 @@ post '/' do
         return "Access Denied: Invalid Signature\n#{res[:log]}"
       end
     end
-    puts "Hello SORACOM Beam Client IMSI:#{request.env['HTTP_X_SORACOM_IMSI']}"
+    greetings = "Hello SORACOM Beam Client"
+    if request.env['HTTP_X_SORACOM_IMSI']
+      greetings += " IMSI:#{request.env['HTTP_X_SORACOM_IMSI']}"
+    end
+    if request.env['HTTP_X_SORACOM_SIM_ID']
+      greetings += " SIM_ID:#{request.env['HTTP_X_SORACOM_SIM_ID']}"
+    end
+    if request.env['HTTP_X_SORACOM_MSISDN']
+      greetings += " MSISDN:#{request.env['HTTP_X_SORACOM_MSISDN']}"
+    end
+    if request.env['HTTP_X_SORACOM_IMEI']
+      greetings += " IMEI:#{request.env['HTTP_X_SORACOM_IMEI']}"
+    end
+    puts greeetings
   end
   "Success: #{output}"
 end

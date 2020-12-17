@@ -13,10 +13,10 @@ while true
     print(s.peeraddr, " is accepted\n")
     greeting = s.gets
     puts "#{s.peeraddr} #{greeting}"
-    if greeting =~ /^(im.i.+\ timestamp=\d+);signature=([0-9a-f]+)/ # 署名済接続の場合
+    if greeting =~ /^(.+\ timestamp=\d+);signature=([0-9a-f]+)/ # 署名済接続の場合
       string_to_sign = $1
       signature = $2
-      calculated_signature = Digest::SHA256.hexdigest "topsecret"+string_to_sign
+      calculated_signature = Digest::SHA256.hexdigest psk+string_to_sign
       if calculated_signature == signature
         reply = verifylog = <<EOS
 --- SIGNATURE VERIFICATION
