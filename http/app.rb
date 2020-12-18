@@ -39,7 +39,7 @@ def verify_signature(env, secret = 'topsecret')
   end
   if calculated_signature
     result = (calculated_signature == env['HTTP_X_SORACOM_SIGNATURE'])
-    logger.debug calculated_signature if result == false
+    logger.info calculated_signature if result == false
     message << (result ? "Match!" : "Does not match...")
   end
   log = <<EOS
@@ -70,8 +70,8 @@ get '/' do
     content_type 'text/plain;charset=utf8'
   end
   if request.env['HTTP_X_SORACOM_IMSI'] || request.env['HTTP_X_SORACOM_IMEI'] || request.env['HTTP_X_SORACOM_SIM_ID'] || request.env['HTTP_X_SORACOM_MSISDN']
-    log=""
-    result=200
+    log = ""
+    result = true
     if request.env['HTTP_X_SORACOM_SIGNATURE']
       res = verify_signature request.env, (params[:secret] || "topsecret")
       logger.debug res[:log]
