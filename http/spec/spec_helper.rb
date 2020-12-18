@@ -10,6 +10,8 @@ module RSpecMixin
   def app() Sinatra::Application end
 end
 
-RSpec.configure do |rspec|
-  rspec.include RSpecMixin
+RSpec.configure do |config|
+  config.include RSpecMixin
+  config.filter_run :focus
+  config.run_all_when_everything_filtered = true
 end
