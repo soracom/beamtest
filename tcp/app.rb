@@ -27,15 +27,15 @@ provided_signature: #{signature}
 ---
 Hello Authorized Soracom Beam Client! :#{string_to_sign}
 EOS
-	puts reply
-	s.write reply
+        puts reply
+        s.write reply
       else
         p greeting
         p string_to_sign
         p signature
         p calculated_signature
       	s.write("ERROR: The request signature we calculated does not match the signature you provided.\n")
-	sleep 3
+        sleep 3
         s.close
       end
     elsif greeting =~ /^im.i=(\d+)/ # IMSIヘッダのみの場合
