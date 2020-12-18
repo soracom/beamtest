@@ -7,6 +7,8 @@ require 'base64'
 set :bind, '0.0.0.0'
 STDOUT.sync = true
 
+DEBUG = false
+
 # シグネチャの検証ロジック
 def verify_signature(env, secret = 'topsecret')
   result = false
@@ -51,7 +53,7 @@ end
 
 # 普通にブラウザなどでアクセスした場合
 get '/' do
-  puts request.env.map{|k,v| "#{k}=#{v}\n"}.sort.join
+  puts request.env.map{|k,v| "#{k}=#{v}\n"}.sort.join if DEBUG
   user_agent = request.env['HTTP_USER_AGENT'] || 'curl'
   template = user_agent.match(/curl/i)? :curl : :dump
   if user_agent.match(/curl/i)
@@ -62,7 +64,7 @@ get '/' do
     result=200
     if request.env['HTTP_X_SORACOM_SIGNATURE']
       res = verify_signature request.env, (params[:secret] || "topsecret")
-      puts res[:log]
+      puts res[:log] if DEBUG
       log = res[:log]
       result = res[:result]
     end
@@ -80,20 +82,20 @@ get '/' do
       greetings += " IMEI:#{request.env['HTTP_X_SORACOM_IMEI']}"
     end
     greetings += " !"
-    puts greetings
+    puts greetings if DEBUG
     status 403 if result == false
     erb template, locals: { greet: greetings, env: request.env, verify_log: log}
   else
-    puts 'Hello unknown client ...'
+    puts 'Hello unknown client ...' if DEBUG
     erb template, locals: { greet: 'Hello Unknown Client...', env: request.env, verify_log:'' }
   end
 end
 
 # データがポストされた場合
 post '/' do
-  puts request.env.map{|k,v| "#{k}=#{v}\n"}.sort.join
+  puts request.env.map{|k,v| "#{k}=#{v}\n"}.sort.join if DEBUG
   data = (request.env['CONTENT_TYPE'] == 'application/json')? JSON.parse(request.body.read) : request.body.read
-  pp data
+  pp data if DEBUG
   if data['payload']
     output = "#{data} => #{Base64.decode64 data['payload']}"
   else
@@ -107,7 +109,7 @@ post '/' do
   if request.env['HTTP_X_SORACOM_IMSI'] || request.env['HTTP_X_SORACOM_IMEI'] || request.env['HTTP_X_SORACOM_SIM_ID'] || request.env['HTTP_X_SORACOM_MSISDN']
     if request.env['HTTP_X_SORACOM_SIGNATURE']
       res = verify_signature request.env
-      puts res[:log]
+      puts res[:log] if DEBUG
       if res[:result]
         return "Access Authorized: #{output}"
       else
@@ -128,7 +130,7 @@ post '/' do
     if request.env['HTTP_X_SORACOM_IMEI']
       greetings += " IMEI:#{request.env['HTTP_X_SORACOM_IMEI']}"
     end
-    puts greetings
+    puts greetings if DEBUG
   end
   "Success: #{output}"
 end
@@ -136,10 +138,11 @@ end
 get '/dumpenv*' do
   request.env.select{|k,v| k=~/HTTP_/}.map{|k,v| "#{k}=#{v}\n"}.join
 end
+
 post '/dumpenv*' do
   request.env.select{|k,v| k=~/HTTP_/}.map{|k,v| "#{k}=#{v}\n"}.join
 end
 
 get '/healthcheck' do
-    'OK'
+  'OK'
 end
