@@ -128,7 +128,7 @@ post '/' do
     if request.env['HTTP_X_SORACOM_IMEI']
       greetings += " IMEI:#{request.env['HTTP_X_SORACOM_IMEI']}"
     end
-    puts greeetings
+    puts greetings
   end
   "Success: #{output}"
 end
