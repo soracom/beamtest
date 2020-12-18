@@ -9,6 +9,9 @@ set :bind, '0.0.0.0'
 STDOUT.sync = true
 DEBUG = false
 logger = Logger.new(STDOUT)
+logger.formatter = proc do |severity, datetime, progname, msg|
+  "[#{severity}] #{msg}\n"
+end
 if DEBUG
   logger.level = Logger::DEBUG
 else
