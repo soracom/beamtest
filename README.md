@@ -30,11 +30,18 @@ docker build tcp
 docker run -d -p 1234:1234 --name beamtest-tcp IMAGE_ID
 ```
 
+### MQTT
+
+You can access an 1883 port by MQTT protocol (not MQTTS).
+
+```
+docker build mqtt
+docker run -d -p 1883:1883 --name beamtest-mqtt IMAGE_ID
+```
 ## Development
+### HTTP
 
 ruby 2.7 and Bundler is required on your local
-
-### HTTP
 
 #### Setup
 
@@ -42,20 +49,27 @@ ruby 2.7 and Bundler is required on your local
 cd http
 # gem install bundler (please install Bundler if your env haven't installed it yet)
 bundle install
-```
-
-#### Run server on local
-
-```
 ruby app.rb
 ```
-
-#### Run test on local
+#### Test
 
 ```
 bundle exec rspec spec
 ```
 
+### TCP
+
+```
+cd tcp
+ruby app.rb
+```
+
 ## Deploy
 
-Undocumented
+beamtest is running on a 'beamtest' cluster on Amazon ECS (tamasui account).
+
+You need to update docker images on ECR and update services. (ECS task definitions point the LATEST images)
+
+- 762707677580.dkr.ecr.ap-northeast-1.amazonaws.com/beamtest/beamtest-http:latest
+- 762707677580.dkr.ecr.ap-northeast-1.amazonaws.com/beamtest/beamtest-tcp:latest
+- 762707677580.dkr.ecr.ap-northeast-1.amazonaws.com/beamtest/beamtest-mqtt:latest
