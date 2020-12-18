@@ -51,7 +51,7 @@ end
 
 # 普通にブラウザなどでアクセスした場合
 get '/' do
-  puts request.env.map{|k,v| "#{k}=#{v}\n"}.join
+  puts request.env.map{|k,v| "#{k}=#{v}\n"}.sort.join
   user_agent = request.env['HTTP_USER_AGENT'] || 'curl'
   template = user_agent.match(/curl/i)? :curl : :dump
   if user_agent.match(/curl/i)
@@ -91,7 +91,7 @@ end
 
 # データがポストされた場合
 post '/' do
-  puts request.env.map{|k,v| "#{k}=#{v}\n"}.join
+  puts request.env.map{|k,v| "#{k}=#{v}\n"}.sort.join
   data = (request.env['CONTENT_TYPE'] == 'application/json')? JSON.parse(request.body.read) : request.body.read
   pp data
   if data['payload']
