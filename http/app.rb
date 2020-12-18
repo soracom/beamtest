@@ -9,18 +9,27 @@ STDOUT.sync = true
 
 # シグネチャの検証ロジック
 def verify_signature(env, secret = 'topsecret')
-  headers = env.select{|k,v| k=~/HTTP_X_SORACOM/}.map do |k, v|
-    "#{k}=#{v}"
-  end.join("\n")
-  if env['HTTP_X_SORACOM_SIGNATURE_VERSION'] == '20150901'
+  result = false
+  message = []
+  headers = request.env.select{|k,v| k=~/HTTP_X_SORACOM/}.map{ |k, v| "#{k}=#{v}" }.join("\n")
+  if env['HTTP_X_SORACOM_SIGNATURE_VERSION'] == '20150901' # It has been removed from beam-proxy.
     string_to_sign = request.env.select{|k,v| k=~/HTTP_X_SORACOM/ && !(k=~/HTTP_X_SORACOM_SIGNATURE/)}
       .map{|k,v| "#{k}=#{v}"}.sort().join()
   elsif env['HTTP_X_SORACOM_SIGNATURE_VERSION'] == '20151001'
     string_to_sign = request.env.select{|k,v| k=~/HTTP_X_SORACOM/ && !(k=~/HTTP_X_SORACOM_SIGNATURE/)}
       .map{|k,v| "#{k.sub(/HTTP_/,'').gsub(/_/,'-').downcase()}=#{v}"}.sort().join()
+  else
+    message << "x-soracom-signature-version header is missing"
   end
-  calculated_signature = Digest::SHA256.hexdigest secret + string_to_sign
-  result = (calculated_signature == env['HTTP_X_SORACOM_SIGNATURE'])
+  if string_to_sign != nil && string_to_sign.size > 0
+    calculated_signature = Digest::SHA256.hexdigest secret + string_to_sign
+  else
+    message << "String to sign does not exist"
+  end
+  if calculated_signature
+    result = (calculated_signature == env['HTTP_X_SORACOM_SIGNATURE'])
+    message << (result ? "Match!" : "Does not match...")
+  end
   log = <<EOS
 = Signature Verification =
 Pre shared key = #{secret}
@@ -35,7 +44,7 @@ provided_signature:
 #{env['HTTP_X_SORACOM_SIGNATURE']}
 
 signature:
-#{(result)? 'Match!':'Does not match...'}
+#{message.join("\n")}
 EOS
   return { result: result, log: log }
 end
