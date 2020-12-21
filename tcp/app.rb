@@ -70,11 +70,11 @@ EOS
     else
       s.write($_)
     end
-    while s.gets
+    while !s.closed? && s.gets
       logger.log(Logger::DEBUG, peeraddr, $_.dump)
       s.write($_)
     end
     logger.log(Logger::INFO, peeraddr, "is gone")
-    s.close
+    s.close unless s.closed?
   end
 end
