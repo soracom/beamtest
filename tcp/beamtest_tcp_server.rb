@@ -40,7 +40,7 @@ class BeamtestTcpServer
         peeraddr = s.peeraddr
         logger.log(Logger::INFO, peeraddr, "is accepted")
         greeting = s.gets
-        logger.log(Logger::DEBUG, peeraddr, greeting.dump)
+        logger.log(Logger::DEBUG, peeraddr, greeting.nil? ? greeting : greeting.dump)
         if greeting =~ /^(.+\ timestamp=\d+);signature=([0-9a-f]+)/ # 署名済接続の場合
           string_to_sign = $1
           signature = $2
