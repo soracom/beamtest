@@ -32,7 +32,6 @@ GEM
 
 PLATFORMS
   ruby
-  x86_64-darwin-19
 
 DEPENDENCIES
   rack-test (~> 1.1)
@@ -40,4 +39,4 @@ DEPENDENCIES
   sinatra (~> 2.1.0)
 
 BUNDLED WITH
-   2.1.4
+   1.17.3
