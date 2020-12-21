@@ -38,6 +38,12 @@ RSpec.describe "TCP server" do
     expect(@socket.read).to eql("ERROR: The request signature we calculated does not match the signature you provided.\n")
   end
 
+  it "should reply return with nil message" do
+    @socket.write(nil)
+    @socket.close_write
+    expect(@socket.read).to eql("")
+  end
+
   it "should reply a welcome message without a signature" do
     @socket.puts("imsi=#{imsi} timestamp=#{timestamp}")
     @socket.close_write
