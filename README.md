@@ -54,14 +54,25 @@ ruby app.rb
 #### Test
 
 ```
+cd http
 bundle exec rspec spec
 ```
 
 ### TCP
 
+#### Setup
+
 ```
 cd tcp
 ruby app.rb
+```
+
+#### Test
+
+```
+cd tcp
+bundle install
+bundle exec rspec spec
 ```
 
 ## Deploy
