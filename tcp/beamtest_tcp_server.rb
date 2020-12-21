@@ -58,10 +58,10 @@ EOS
             logger.log(Logger::INFO, peeraddr, reply)
             s.write reply
           else
-            logger.log(Logger::INFO, peeraddr, greeting.dump)
-            logger.log(Logger::INFO, peeraddr, string_to_sign.dump)
-            logger.log(Logger::INFO, peeraddr, signature.dump)
-            logger.log(Logger::INFO, peeraddr, calculated_signature.dump)
+            logger.log(Logger::INFO, peeraddr, greeting)
+            logger.log(Logger::INFO, peeraddr, string_to_sign)
+            logger.log(Logger::INFO, peeraddr, signature)
+            logger.log(Logger::INFO, peeraddr, calculated_signature)
             s.write("ERROR: The request signature we calculated does not match the signature you provided.\n")
             sleep 3
             s.close()

@@ -20,25 +20,25 @@ RSpec.describe "TCP server" do
     @server.stop()
   end
 
-  it "echo back message" do
+  it "should echo given message" do
     @socket.puts("Hello, world")
     @socket.close_write
     expect(@socket.read).to eql("Hello, world\n")
   end
 
-  it "return authorized message with a valid signature" do
+  it "should reply an authorized message with a valid signature" do
     @socket.puts("imsi=#{imsi} timestamp=#{timestamp};signature=#{signature}")
     @socket.close_write
     expect(@socket.read).to include("Hello Authorized Soracom Beam Client! :imsi=440101234567890 timestamp=1608251959862\n")
   end
 
-  it "return authorized message with an invalid signature" do
+  it "should reply return an error message with an invalid signature" do
     @socket.puts("imsi=#{imsi} timestamp=#{timestamp};signature=deadbeafcafebabe")
     @socket.close_write
     expect(@socket.read).to eql("ERROR: The request signature we calculated does not match the signature you provided.\n")
   end
 
-  it "return message without a signature" do
+  it "should reply a welcome message without a signature" do
     @socket.puts("imsi=#{imsi} timestamp=#{timestamp}")
     @socket.close_write
     expect(@socket.read).to eql("Hello Soracom Beam Client! : imsi=440101234567890 timestamp=1608251959862\n")
