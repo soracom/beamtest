@@ -38,7 +38,7 @@ EOS
         sleep 3
         s.close
       end
-    elsif greeting =~ /[A-Za-z]+=(\d+)/ # 署名がない場合
+    elsif greeting =~ /^(imei=undefined\s)?[A-Za-z]+=(\d+)/ # 署名がない場合
       reply = "Hello Soracom Beam Client! : #{greeting.chomp}\n"
       puts reply
       s.write reply
