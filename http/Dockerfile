@@ -3,7 +3,6 @@ FROM ruby:2.7
 WORKDIR /app
 COPY Gemfile .
 COPY Gemfile.lock .
-RUN gem uninstall bundler
 RUN gem install bundler:2.2.2
 RUN bundle config set without 'test development'
 RUN bundle config set deployment 'true'
